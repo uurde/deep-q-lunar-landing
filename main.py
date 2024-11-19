@@ -43,3 +43,24 @@ minibatch_size = 100
 discount_factor = 0.99
 replay_buffer_size = int(1e5) #100000
 interpolation_parameter = 1e-3
+
+# Implementing Experience Replay
+class ReplayMemory(object):
+    def __init__(self, capacity):
+        self.device = torch.device("cuda:0" if torch.cude.is_available() else "cpu")
+        self.capacity = capacity
+        self.memory = []
+    
+    def push(self, event):
+        self.memory.append(event)
+        if len(self.memory) > self.capacity:
+            del self.memory[0]
+    
+    def sample(self, batch_size):
+        experiences = random.sample(self.memory, k = batch_size)
+        states = torch.from_numpy(np.vstach([e[0] for e in experiences if e is not None])).float().to(self.device)
+        actions = torch.from_numpy(np.vstach([e[1] for e in experiences if e is not None])).long().to(self.device)
+        rewards = torch.from_numpy(np.vstach([e[2] for e in experiences if e is not None])).float().to(self.device)
+        next_states = torch.from_numpy(np.vstach([e[3] for e in experiences if e is not None])).float().to(self.device)
+        dones = torch.from_numpy(np.vstach([e[4] for e in experiences if e is not None])).astype(np.uint8).float().to(self.device)
+        return states, next_states, actions, rewards, dones
