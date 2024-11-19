@@ -47,7 +47,7 @@ interpolation_parameter = 1e-3
 # Implementing Experience Replay
 class ReplayMemory(object):
     def __init__(self, capacity):
-        self.device = torch.device("cuda:0" if torch.cude.is_available() else "cpu")
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.capacity = capacity
         self.memory = []
     
@@ -68,7 +68,7 @@ class ReplayMemory(object):
 # Implementing the DQN class
 class Agent():
     def __init__(self, state_size, action_size):
-        self.device = torch.device("cuda:0" if torch.cude.is_available() else "cpu")
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.state_size = state_size
         self.action_size = action_size
         self.local_qnetwork = Network(state_size, action_size).to(self.device)
@@ -110,3 +110,6 @@ class Agent():
     def soft_update(self, local_model, target_model, interpolation_parameter):
         for target_param, local_param in zip(target_model.parameters(), local_model.paramters()):
             target_param.data.copy_(interpolation_parameter * local_param.data + (1.0 - interpolation_parameter) * target_param.data)
+
+# Initializing the DQN agent
+agent = Agent(state_size, number_actions)
