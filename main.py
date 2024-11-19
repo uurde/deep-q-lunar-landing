@@ -27,19 +27,19 @@ class Network(nn.Module):
         x = F.relu(x)
         return self.fc3(x)
 
-    # Setting up the environment
-    import gymnasium as gym
-    env = gym.make('LunarLander-v3')
-    state_shape = env.observation_space.shape
-    state_size = env.observation_space.shape[0]
-    number_actions = env.action_space.n
-    print('State shape: ', state_shape)
-    print('State size: ', state_size)
-    print('Number Actions: ', number_actions)
+# Setting up the environment
+import gymnasium as gym
+env = gym.make('LunarLander-v3')
+state_shape = env.observation_space.shape
+state_size = env.observation_space.shape[0]
+number_actions = env.action_space.n
+print('State shape: ', state_shape)
+print('State size: ', state_size)
+print('Number Actions: ', number_actions)
 
-    # Initializing the hyperparameters
-    learning_rate = 5e-4 #0.0005
-    minibatch_size = 100
-    discount_factor = 0.99
-    replay_buffer_size = int(1e5) #100000
-    interpolation_parameter = 1e-3
+# Initializing the hyperparameters
+learning_rate = 5e-4 #0.0005
+minibatch_size = 100
+discount_factor = 0.99
+replay_buffer_size = int(1e5) #100000
+interpolation_parameter = 1e-3
