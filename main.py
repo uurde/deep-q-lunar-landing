@@ -145,53 +145,39 @@ for episode in range(1, number_episodes + 1):
         break
 
 # Visualizing the results
+#macos brew install ffmpeg
 import glob
 import io
 import base64
 import imageio
 from IPython.display import HTML, display
-from gymnasium.wrappers import RecordEpisodeStatistics, RecordVideo
 
 def show_video_of_model(agent, env_name):
-    env = gym.make(env_name, render_mode = 'rgb_array')
-    env = RecordVideo(env, video_folder="lunarLander-agent", name_prefix="training", episode_trigger=lambda x: x % episode == 0)
-    env = RecordEpisodeStatistics(env)
-    for episode_num in range(number_episodes):
-        obs, info = env.reset()
-        episode_over = False
-        while not done:
-            action = agent.act(state) 
-            obs, reward, terminated, truncated, info = env.step(action)
-
-            episode_over = terminated or truncated
+    env = gym.make(env_name, render_mode='rgb_array')
+    state, _ = env.reset()
+    done = False
+    frames = []
+    while not done:
+        frame = env.render()
+        frames.append(frame)
+        action = agent.act(state)
+        state, reward, done, _, _ = env.step(action)
     env.close()
-
-# def show_video_of_model(agent, env_name):
-#     env = gym.make(env_name, render_mode = 'rgb_array')
-#     state, _ = env.reset()
-#     done = False
-#     frames = []
-#     while not done:
-#         frame = env.render()
-#         frames.append(frame)
-#         action = agent.act(state)
-#         state, reward, done, _, _ = env.step(action.item())
-#     env.close()
-#     imageio.mimsave('video.mp4', frames, fps=30)
+    imageio.mimsave('video.mp4', frames, fps=30)
 
 show_video_of_model(agent, 'LunarLander-v3')
 
-# def show_video():
-#     mp4list = glob.glob('*.mp4')
-#     if len(mp4list) > 0:
-#         mp4 = mp4list[0]
-#         video = io.open(mp4, 'r+b').read()
-#         encoded = base64.b64encode(video)
-#         display(HTML(data='''<video alt="test" autoplay
-#                 loop controls style="height: 400px;">
-#                 <source src="data:video/mp4;base64,{0}" type="video/mp4" />
-#              </video>'''.format(encoded.decode('ascii'))))
-#     else:
-#         print("Could not find video")
+def show_video():
+    mp4list = glob.glob('*.mp4')
+    if len(mp4list) > 0:
+        mp4 = mp4list[0]
+        video = io.open(mp4, 'r+b').read()
+        encoded = base64.b64encode(video)
+        display(HTML(data='''<video alt="test" autoplay
+                loop controls style="height: 400px;">
+                <source src="data:video/mp4;base64,{0}" type="video/mp4" />
+             </video>'''.format(encoded.decode('ascii'))))
+    else:
+        print("Could not find video")
 
-# show_video()
+show_video()
