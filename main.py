@@ -150,20 +150,34 @@ import io
 import base64
 import imageio
 from IPython.display import HTML, display
-from gym.wrappers.monitoring.video_recorder import VideoRecorder
+from gymnasium.wrappers import RecordEpisodeStatistics, RecordVideo
 
 def show_video_of_model(agent, env_name):
-    env = gym.make(env_name, render_mode='rgb_array')
-    state, _ = env.reset()
-    done = False
-    frames = []
-    while not done:
-        frame = env.render()
-        frames.append(frame)
-        action = agent.act(state)
-        state, reward, done, _, _ = env.step(action.item())
+    env = gym.make(env_name, render_mode = 'rgb_array')
+    env = RecordVideo(env, video_folder="lunarLander-agent", name_prefix="training", episode_trigger=lambda x: x % episode == 0)
+    env = RecordEpisodeStatistics(env)
+    for episode_num in range(number_episodes):
+        obs, info = env.reset()
+        episode_over = False
+        while not done:
+            action = agent.act(state) 
+            obs, reward, terminated, truncated, info = env.step(action)
+
+            episode_over = terminated or truncated
     env.close()
-    imageio.mimsave('video.mp4', frames, fps=30)
+
+# def show_video_of_model(agent, env_name):
+#     env = gym.make(env_name, render_mode = 'rgb_array')
+#     state, _ = env.reset()
+#     done = False
+#     frames = []
+#     while not done:
+#         frame = env.render()
+#         frames.append(frame)
+#         action = agent.act(state)
+#         state, reward, done, _, _ = env.step(action.item())
+#     env.close()
+#     imageio.mimsave('video.mp4', frames, fps=30)
 
 show_video_of_model(agent, 'LunarLander-v3')
 
